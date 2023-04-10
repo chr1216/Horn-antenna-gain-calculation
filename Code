@@ -1,0 +1,42 @@
+% 喇叭天线增益计算程序
+
+% 输入参数
+type = input('请输入喇叭类型（E/H/C/N）：', 's');
+f = input('请输入工作频率（单位：赫兹）：');
+L = input('请输入喇叭长度（单位：米）：');
+W1 = input('请输入喇叭口宽（单位：米）：');
+W2 = input('请输入喇叭口高（单位：米）：');
+if type == 'C'
+    L1 = input('请输入喇叭锥长（单位：米）：');
+else
+    L1 = 0;
+end
+
+% 计算波长
+lambda = 3e8 / f;
+
+% 计算喇叭口面积
+A = W1 * W2;
+
+% 计算喇叭的等效长度
+if type == 'E'
+    Leff = L + W1 / 2;
+elseif type == 'H'
+    Leff = L + W2 / 2;
+elseif type == 'C'
+    Leff = L + 0.85 * L1;
+else
+    Leff = L;
+end
+
+% 计算喇叭天线的增益
+if type == 'E' || type == 'H'
+    G = (4 * pi * A) / (lambda^2) * ((Leff / lambda)^2);
+elseif type == 'C'
+    G = (4 * pi * A) / (lambda^2) * ((Leff / lambda)^2) * ((1 + W1 / (2 * L1))^2);
+else
+    G = (4 * pi * A) / (lambda^2) * ((Leff / lambda)^2) * ((1 + W1 / W2)^2);
+end
+
+% 输出结果
+fprintf('喇叭天线的增益为：%f dB\n', 10 * log10(G));
